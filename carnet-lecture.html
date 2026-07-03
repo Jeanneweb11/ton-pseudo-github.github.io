@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Carnet de lecture</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #ECE8DF;
+    --paper-card: #F5F2EA;
+    --ink: #2B2721;
+    --ink-soft: #55503F;
+    --wine: #6E2430;
+    --wine-soft: #8B4351;
+    --sage: #6E7C5E;
+    --rule: #C9C2AF;
+  }
+
+  * { box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    margin: 0;
+    background: var(--paper);
+    background-image:
+      radial-gradient(circle at 1px 1px, rgba(43,39,33,0.05) 1px, transparent 0);
+    background-size: 22px 22px;
+    color: var(--ink);
+    font-family: "Newsreader", serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a { color: inherit; }
+
+  .wrap {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 0 24px 100px;
+  }
+
+  /* ===== Masthead ===== */
+  header.masthead {
+    padding: 72px 0 40px;
+    text-align: center;
+    position: relative;
+  }
+
+  .eyebrow {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--wine);
+    margin-bottom: 18px;
+  }
+
+  h1.title {
+    font-size: clamp(38px, 7vw, 58px);
+    font-weight: 500;
+    font-style: italic;
+    line-height: 1.05;
+    margin: 0 0 14px;
+    letter-spacing: -0.01em;
+  }
+
+  .subtitle {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 12.5px;
+    color: var(--ink-soft);
+    letter-spacing: 0.02em;
+  }
+
+  .masthead-rule {
+    margin-top: 36px;
+    height: 1px;
+    background: repeating-linear-gradient(
+      to right, var(--rule) 0 6px, transparent 6px 10px
+    );
+  }
+
+  /* ===== Index counter ===== */
+  .index-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    color: var(--ink-soft);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 34px 4px 18px;
+  }
+
+  /* ===== Fiche (card) ===== */
+  .fiche {
+    background: var(--paper-card);
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+    box-shadow: 0 1px 0 rgba(43,39,33,0.04);
+    margin-bottom: 28px;
+    padding: 30px 30px 26px;
+    position: relative;
+    transition: transform 0.35s cubic-bezier(.2,.8,.2,1), box-shadow 0.35s;
+  }
+
+  .fiche::before {
+    content: "";
+    position: absolute;
+    left: 0; top: 18px; bottom: 18px;
+    width: 3px;
+    background: var(--sage);
+    opacity: 0.55;
+  }
+
+  .fiche:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgba(43,39,33,0.10);
+  }
+
+  .fiche-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 6px;
+  }
+
+  .cote {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    color: var(--ink-soft);
+    letter-spacing: 0.04em;
+  }
+
+  .stamp {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    color: var(--wine);
+    border: 1.5px solid var(--wine-soft);
+    border-radius: 50%;
+    width: 66px;
+    height: 66px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    line-height: 1.25;
+    transform: rotate(-9deg);
+    flex-shrink: 0;
+    opacity: 0.85;
+    text-transform: uppercase;
+  }
+
+  h2.book-title {
+    font-size: 25px;
+    font-weight: 600;
+    font-style: italic;
+    margin: 8px 0 2px;
+    line-height: 1.2;
+  }
+
+  .book-author {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 12px;
+    color: var(--ink-soft);
+    margin-bottom: 16px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .note {
+    font-size: 16.5px;
+    line-height: 1.65;
+    color: var(--ink);
+    margin: 0 0 12px;
+  }
+
+  .note .latin {
+    font-style: italic;
+  }
+
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 16px;
+  }
+
+  .tag {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--sage);
+    border: 1px solid var(--sage);
+    border-radius: 20px;
+    padding: 3px 10px;
+    opacity: 0.85;
+  }
+
+  /* ===== Add entry ghost card ===== */
+  .fiche.ghost {
+    border-style: dashed;
+    background: transparent;
+    box-shadow: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ink-soft);
+    font-family: "JetBrains Mono", monospace;
+    font-size: 12px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    min-height: 90px;
+    cursor: default;
+  }
+  .fiche.ghost::before { display: none; }
+  .fiche.ghost:hover { transform: none; box-shadow: none; }
+
+  footer {
+    text-align: center;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10.5px;
+    color: var(--ink-soft);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding-top: 30px;
+    opacity: 0.7;
+  }
+
+  /* Accessibility */
+  a:focus-visible, .fiche:focus-visible {
+    outline: 2px solid var(--wine);
+    outline-offset: 3px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .fiche { transition: none; }
+  }
+
+  @media (max-width: 520px) {
+    .fiche-top { flex-direction: row; }
+    .stamp { width: 56px; height: 56px; font-size: 9px; }
+    h1.title { font-size: 34px; }
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+
+    <header class="masthead">
+      <div class="eyebrow">Fichier personnel — non classé</div>
+      <h1 class="title">Carnet de lecture</h1>
+      <div class="subtitle">notes de lecture, sourcées et datées</div>
+      <div class="masthead-rule"></div>
+    </header>
+
+    <div class="index-line">
+      <span>3 fiches enregistrées</span>
+      <span>Mise à jour — juillet 2026</span>
+    </div>
+
+    <article class="fiche" tabindex="0">
+      <div class="fiche-top">
+        <span class="cote">843.914 — SPR</span>
+        <span class="stamp">lu<br>mai<br>2026</span>
+      </div>
+      <h2 class="book-title">Le Consentement</h2>
+      <div class="book-author">Vanessa Springora</div>
+      <p class="note">
+        Un récit autobiographique construit avec une précision presque clinique : l'autrice retrace l'emprise
+        exercée sur elle, adolescente, par un écrivain adulte, et la manière dont le milieu littéraire de
+        l'époque l'a couverte plutôt que questionnée. Le texte tire sa force de sa sobriété — peu d'effets
+        de style, beaucoup de faits posés dans l'ordre.
+      </p>
+      <div class="tags">
+        <span class="tag">récit</span>
+        <span class="tag">emprise</span>
+        <span class="tag">milieu littéraire</span>
+      </div>
+    </article>
+
+    <article class="fiche" tabindex="0">
+      <div class="fiche-top">
+        <span class="cote">188 — SEN</span>
+        <span class="stamp">lu<br>juin<br>2026</span>
+      </div>
+      <h2 class="book-title">De la brièveté de la vie</h2>
+      <div class="book-author">Sénèque</div>
+      <p class="note">
+        Un traité de philosophie stoïcienne (<span class="latin">de la stoa</span> — l'école du portique)
+        adressé à Paulinus, où Sénèque soutient que la vie n'est pas courte : nous la rendons courte en la
+        gaspillant. Le <span class="latin">otium</span> (le loisir studieux, consacré à soi) y est opposé au
+        <span class="latin">negotium</span> (l'agitation des affaires) comme la seule vraie forme de vie pleine.
+      </p>
+      <div class="tags">
+        <span class="tag">stoïcisme</span>
+        <span class="tag">temps</span>
+        <span class="tag">antiquité</span>
+      </div>
+    </article>
+
+    <article class="fiche" tabindex="0">
+      <div class="fiche-top">
+        <span class="cote">843.92 — COL</span>
+        <span class="stamp">lu<br>juin<br>2026</span>
+      </div>
+      <h2 class="book-title">Le Cerf-volant</h2>
+      <div class="book-author">Laetitia Colombani</div>
+      <p class="note">
+        Un roman qui suit une jeune femme partie enseigner dans un village reculé d'Inde, et la manière dont
+        elle y ouvre une école pour les filles malgré les résistances locales. Colombani y poursuit son thème
+        de prédilection : des trajectoires de femmes qui se reconstruisent en construisant quelque chose pour
+        d'autres.
+      </p>
+      <div class="tags">
+        <span class="tag">roman</span>
+        <span class="tag">émancipation</span>
+        <span class="tag">Inde</span>
+      </div>
+    </article>
+
+    <div class="fiche ghost">+ prochaine fiche à venir</div>
+
+    <footer>Carnet tenu à jour manuellement · Marseille / Lille</footer>
+
+  </div>
+</body>
+</html>
